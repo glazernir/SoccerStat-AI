@@ -1,4 +1,8 @@
+import numpy as np
 import pandas as pd
+from numpy.random import exponential
+
+decay_rate = 0.5
 
 def load_and_process_data(file_path):
     df = pd.read_csv(file_path)
@@ -12,7 +16,7 @@ def remove_insufficient_data_players(df):
         last_appearance=('date', 'max'),
         total_minutes=('minutes_played', 'sum')
     )
-    
+
     player_groups['time_span_days'] = (player_groups['last_appearance'] - player_groups['first_appearance']).dt.days
     # remove players with less than a year of date, players with less than 30 minutes played 
     filtered_players = player_groups[
@@ -24,7 +28,7 @@ def remove_insufficient_data_players(df):
     one_year_ago = pd.Timestamp.now() - pd.DateOffset(days=365)
     df_recent = df_filtered[df_filtered['date'] >= one_year_ago]
     
-    # remove players who dont have data in the last year
+    # remove players who don't have data in the last year
     players_with_recent_data = df_recent['player_id'].unique()
     
     return df_filtered[df_filtered['player_id'].isin(players_with_recent_data)]
@@ -47,6 +51,8 @@ def calculate_sums(player_df):
         'total_time_in_minutes': total_minutes
     })
 
+def calc_weighted_stats(df):
+    return df.groupby('player_id').apply(weighted_data)
 
 def calc_time_limit_ago(time_limit_ago, df):
     df_last_year = df[df['date'] >= time_limit_ago]
@@ -77,12 +83,37 @@ def calc_by_timefranes(df):
 
     return results
 
+def weighted_data(df):
+    current_time = pd.Timestamp.now()
+    df['calc_time'] = (current_time - df['date']).dt.days
+    #df['calc_time'] = pd.to_numeric(df['calc_time'], errors='coerce')
+    df['weights'] = np.exp(-decay_rate * df['calc_time'] / 365)
+    total_minutes = df['minutes_played'].sum()
+    if total_minutes == 0:
+        return pd.Series({
+            'weighted_goals': 0,
+            'weighted_assists': 0,
+            'weighted_yellow_cards': 0,
+            'weighted_red_cards': 0,
+            'total_time': 0
+        })
+    return pd.Series({
+        'weighted_goals': (df['goals'] * df['weights']).sum(),
+        'weighted_assits': (df['assists'] * df['weights']).sum(),
+        'weighted_yellow_cards': (df['yellow_cards'] * df['weights']).sum(),
+        'weighted_red_cards': (df['red_cards'] * df['weights']).sum(),
+        'total_time': total_minutes
+    })
+
+
 
 if __name__ == "__main__":
     file_path = r'datasets\appearances.csv'
     df = load_and_process_data(file_path)
     df = remove_insufficient_data_players(df)
     results = calc_by_timefranes(df)
-    
-    print(results.head())
+    results.fillna(0, inplace=True)
+    results.to_csv(r'datasets\vector_appearances.csv')
+    results = calc_weighted_stats(df)
+    results.to_csv(r'datasets\weighted_vector_appearances.csv')
 
