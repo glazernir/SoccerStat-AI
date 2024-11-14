@@ -58,7 +58,7 @@ def calc_time_limit_ago(time_limit_ago, df):
     df_last_year = df[df['date'] >= time_limit_ago]
     return df_last_year.groupby('player_id').apply(calculate_sums)
 
-def calc_by_timefranes(df):
+def calc_by_timeframes(df):
     timeframes = {
         'one_month_ago': pd.Timestamp.now() - pd.DateOffset(days=30),
         'three_months_ago': pd.Timestamp.now() - pd.DateOffset(days=90),
@@ -111,7 +111,7 @@ if __name__ == "__main__":
     file_path = r'datasets\appearances.csv'
     df = load_and_process_data(file_path)
     df = remove_insufficient_data_players(df)
-    results = calc_by_timefranes(df)
+    results = calc_by_timeframes(df)
     results.fillna(0, inplace=True)
     results.to_csv(r'datasets\vector_appearances.csv')
     results = calc_weighted_stats(df)
