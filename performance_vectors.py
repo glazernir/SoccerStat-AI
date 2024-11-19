@@ -129,5 +129,6 @@ if __name__ == "__main__":
     # results.fillna(0, inplace=True)
     # results.to_csv(r'datasets\vector_appearances.csv')
     # results = calc_weighted_stats(df)
+
     # results.to_csv(r'datasets\weighted_vector_appearances.csv')
 
