@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-
+from train import trainDataset
 from numpy.random import exponential
 
 decay_rate = 0.5
@@ -110,17 +110,9 @@ def weighted_data(df):
 
 if __name__ == "__main__":
     import torch
-
-    # Check PyTorch version
-    print("PyTorch version:", torch.__version__)
-
-    # Verify if CUDA is available
-    print("CUDA available:", torch.cuda.is_available())
-
-    # Test a tensor operation
-    x = torch.tensor([1.0, 2.0, 3.0])
-    print("Tensor:", x)
-    print("Tensor multiplied by 2:", x * 2)
+    from torchvision import datasets
+    from torchvision import transforms
+    import matplotlib.pyplot as plt
 
     # file_path = r'datasets\appearances.csv'
     # df = load_and_process_data(file_path)
@@ -129,6 +121,9 @@ if __name__ == "__main__":
     # results.fillna(0, inplace=True)
     # results.to_csv(r'datasets\vector_appearances.csv')
     # results = calc_weighted_stats(df)
+    #results.to_csv(r'datasets\weighted_vector_appearances.csv')
 
-    # results.to_csv(r'datasets\weighted_vector_appearances.csv')
+    results = pd.read_csv(r'datasets\weighted_vector_appearances.csv')
+    trainDataset(results)
+
 
