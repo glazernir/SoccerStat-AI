@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 from train import trainDataset
 from numpy.random import exponential
-
+from sklearn.model_selection import train_test_split
+from trainTest import train_and_test_autoencoder
 decay_rate = 0.5
 
 def load_and_process_data(file_path):
@@ -106,6 +107,24 @@ def weighted_data(df):
         'total_time': total_minutes
     })
 
+def createTestSet(league):
+    # extract the players from specific league for test set
+    df = pd.read_csv("datasets/appearances.csv")
+    filtered_df = df[df['competition_id'] == league]
+    player_ids = filtered_df['player_id'].unique()
+    return player_ids
+
+
+def splitToTrainTest(results,char,player_ids):
+    # if we want to split by competition
+    if char == 'C':
+        test_data = results[results['player_id'].isin(player_ids)]
+        train_data = results[~results['player_id'].isin(player_ids)]
+        return test_data, train_data
+    # if we want to split randomly
+    elif char == 'R':
+        train_data, test_data = train_test_split(results, test_size=0.2, random_state=42)
+        return test_data, train_data
 
 
 if __name__ == "__main__":
@@ -114,7 +133,6 @@ if __name__ == "__main__":
     from torchvision import transforms
     import matplotlib.pyplot as plt
 
-
     # file_path = r'datasets\appearances.csv'
     # df = load_and_process_data(file_path)
     # df = remove_insufficient_data_players(df)
@@ -122,9 +140,28 @@ if __name__ == "__main__":
     # results.fillna(0, inplace=True)
     # results.to_csv(r'datasets\vector_appearances.csv')
     # results = calc_weighted_stats(df)
-    #results.to_csv(r'datasets\weighted_vector_appearances.csv')
+    # results.to_csv(r'datasets\weighted_vector_appearances.csv')
 
     results = pd.read_csv(r'datasets\weighted_vector_appearances.csv')
-    trainDataset(results)
+
+    #train without split to train + test
+    #trainDataset(results)
+
+    #split the data for train and test:
+
+    #'C' for split by competition:
+    # possible Leagues for test set IT1, ES1,GB1,FR1
+    testSet_playerIds = createTestSet('FR1')
+    test_data, train_data = splitToTrainTest(results, 'C', testSet_playerIds)
+
+    # #'R' for random split:
+    #test_data, train_data = splitToTrainTest(results, 'R',None)
+
+    print(f"Train data size: {len(train_data)}, Test data size: {len(test_data)}")
+
+    model, test_loss = train_and_test_autoencoder(train_data, test_data, batch_size=32, encoding_dim=100, num_epochs=20,
+                                                  learning_rate=0.003)
+    print(f"Test Loss: {test_loss:.4f}")
+
 
 

@@ -53,6 +53,8 @@ def trainDataset(dataset):
     dataset_tensor = torch.FloatTensor(dataset_normalized.to_numpy())
     # encoded_data = model.encoder(dataset_tensor).detach().numpy()
     # encoded_data = model.decoder(encoded_data).detach().numpy()
+    expandData = model.encoder(dataset_tensor)
+    expandData.to_csv('expanded_data.csv',index=False)
     trained_data = model.forward(dataset_tensor)
 
     trained_data_df = pd.DataFrame(trained_data.detach().numpy())
