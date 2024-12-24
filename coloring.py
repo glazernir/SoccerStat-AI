@@ -2,11 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
+import mplcursors
 
 
 def coloringByParam(path,param,coloringShape):
-    import pandas as pd
-    from sklearn.decomposition import PCA
 
     # Load the data
     players = pd.read_csv(path)
@@ -26,9 +25,9 @@ def coloringByParam(path,param,coloringShape):
         return
 
     plt.figure(figsize=(14, 10))
-    sub_positions = result[param].unique()
-    colors = plt.cm.tab10(range(len(sub_positions)))
-    for sub_position, color in zip(sub_positions, colors):
+    param_values = result[param].unique()
+    colors = plt.cm.tab10(range(len(param_values)))
+    for sub_position, color in zip(param_values, colors):
         subset = result[result[param] == sub_position]
         plt.scatter(subset['PC1'], subset['PC2'], label=sub_position, color=color)
     plt.legend(title=param)
@@ -120,7 +119,7 @@ if __name__ == '__main__':
     # prepare_age()
     # coloringByParam("categorical_age.csv", 'categorical_age',1)
 
-    # coloringByParam('datasets/players.csv', 'position',1)
+    coloringByParam('datasets/players.csv', 'position',1)
 
     # prepare_League()
     # coloringByParam('categorical_League.csv','current_club_domestic_competition_id',1)
@@ -131,9 +130,12 @@ if __name__ == '__main__':
     #coloringByParam('datasets/players.csv','foot',1)
 
     #continuous coloring:
-    #coloringByParam('datasets/players.csv','market_value_in_eur',0)
 
-    prepare_definiteTime_stats('datasets/players.csv',2020)
-    prepare_age(2020,str(2020) + "_stats.csv")
-    coloringByParam('players_age.csv', 'age', 0)
+    # coloringByParam('datasets/players.csv','market_value_in_eur',0)
+    #
+    # coloringByParam('datasets/players.csv','height_in_cm',0)
+    #
+    # prepare_definiteTime_stats('datasets/players.csv',2020)
+    # prepare_age(2020,str(2020) + "_stats.csv")
+    # coloringByParam('players_age.csv', 'age', 0)
 
