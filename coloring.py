@@ -1,8 +1,64 @@
 import pandas as pd
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
-import mplcursors
+import numpy as np
+
+
+def plot_dataset_with_continuous_coloring(data, param):
+    def on_click(event):
+        if event.inaxes:
+            print(f"Clicked point: ({event.xdata}, {event.ydata})")
+
+    plt.figure(figsize=(14, 10))
+    sc = plt.scatter(
+        data['PC1'], data['PC2'],
+        c=data[param],
+        cmap='Reds',
+        s=100,
+        alpha=0.8
+    )
+    cbar = plt.colorbar(sc)
+    cbar.set_label(param)
+    plt.xlabel("PC1")
+    plt.ylabel("PC2")
+    plt.title("Scatter Plot of Points Colored by " + param)
+    plt.tight_layout()
+
+    fig = plt.gcf()
+    fig.canvas.mpl_connect('button_press_event', on_click)
+    plt.show()
+
+
+def plot_dataset_with_click_and_coloring(data, param):
+    def on_click(event):
+        if event.inaxes:
+            print(f"Clicked point: ({event.xdata}, {event.ydata})")
+
+    plt.figure(figsize=(14, 10))
+    param_values = data[param].unique()
+    colors = plt.cm.tab10(range(len(param_values)))
+    for sub_position, color in zip(param_values, colors):
+        subset = data[data[param] == sub_position]
+        plt.scatter(subset['PC1'], subset['PC2'], label=sub_position, color=color, picker=True)
+
+    plt.legend(title=param)
+    plt.xlabel("PC1")
+    plt.ylabel("PC2")
+    plt.title("Scatter Plot of Points Colored by " + param)
+
+    fig = plt.gcf()  # Get current figure
+    fig.canvas.mpl_connect('button_press_event', on_click)
+    plt.show()
+
+def get_player_id_by_dimensions(data, pc1, pc2):
+    match = data[(data['PC1'] == pc1) & (data['PC2'] == pc2)]
+    if not match.empty:
+        return match['player_id'].iloc[0]
+    else:
+        return None
 
 
 def coloringByParam(path,param,coloringShape):
@@ -18,23 +74,28 @@ def coloringByParam(path,param,coloringShape):
     reduced_data = pd.DataFrame(reduced_data, columns=["PC1", "PC2"])
     reduced_data["player_id"] = player_numbers.values
     result = reduced_data.merge(w_players, on="player_id", how="left")
+    result.to_csv('pca_results.csv', index=False)
 
     #if coloringShape is 0 than categorical, else continuous
     if coloringShape == 0:
-        continuousColoring(result,param)
+        plot_dataset_with_continuous_coloring(result, param)
+        #continuousColoring(result,param)
         return
 
-    plt.figure(figsize=(14, 10))
-    param_values = result[param].unique()
-    colors = plt.cm.tab10(range(len(param_values)))
-    for sub_position, color in zip(param_values, colors):
-        subset = result[result[param] == sub_position]
-        plt.scatter(subset['PC1'], subset['PC2'], label=sub_position, color=color)
-    plt.legend(title=param)
-    plt.xlabel("PC1")
-    plt.ylabel("PC2")
-    plt.title("Scatter Plot of Points Colored by " + param)
-    plt.show()
+    plot_dataset_with_click_and_coloring(result,param)
+
+    # plt.figure(figsize=(14, 10))
+    # param_values = result[param].unique()
+    # colors = plt.cm.tab10(range(len(param_values)))
+    # for sub_position, color in zip(param_values, colors):
+    #     subset = result[result[param] == sub_position]
+    #     plt.scatter(subset['PC1'], subset['PC2'], label=sub_position, color=color,picker=True)
+    # plt.legend(title=param)
+    # plt.xlabel("PC1")
+    # plt.ylabel("PC2")
+    # plt.title("Scatter Plot of Points Colored by " + param)
+    # plt.show()
+
 
 def continuousColoring(dataSet,param):
     plt.figure(figsize=(14, 10))
@@ -52,6 +113,7 @@ def continuousColoring(dataSet,param):
     plt.title("Scatter Plot of Points Colored by " + param)
     plt.tight_layout()
     plt.show()
+
 
 def prepare_marketVaule():
     players = pd.read_csv("datasets/players.csv")
@@ -113,29 +175,21 @@ if __name__ == '__main__':
 
     # categorical coloring:
 
-    # prepare_marketVaule()
-    # coloringByParam('categorical_market_value.csv','categorical_market_value',1)
-
-    # prepare_age()
-    # coloringByParam("categorical_age.csv", 'categorical_age',1)
-
     coloringByParam('datasets/players.csv', 'position',1)
-
-    # prepare_League()
+    # # prepare_League()
     # coloringByParam('categorical_League.csv','current_club_domestic_competition_id',1)
-
-    # prepare_country()
+    # # prepare_country()
     # coloringByParam('categorical_country.csv','country_of_birth',1)
-
     #coloringByParam('datasets/players.csv','foot',1)
-
-    #continuous coloring:
-
+    #
+    # #continuous coloring:
     # coloringByParam('datasets/players.csv','market_value_in_eur',0)
-    #
     # coloringByParam('datasets/players.csv','height_in_cm',0)
-    #
-    # prepare_definiteTime_stats('datasets/players.csv',2020)
-    # prepare_age(2020,str(2020) + "_stats.csv")
+    # # prepare_definiteTime_stats('datasets/players.csv',2020)
+    # # prepare_age(2020,str(2020) + "_stats.csv")
     # coloringByParam('players_age.csv', 'age', 0)
+    #
+    # result = pd.read_csv("pca_results.csv")
+    # print(get_player_id_by_dimensions(result, -0.656672, 1.130110))
+
 
