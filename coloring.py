@@ -213,7 +213,6 @@ if __name__ == '__main__':
     coloringByParam('datasets/players.csv','height_in_cm',0)
     coloringByParam('players_age.csv', 'age', 0)
 
-
     # head to head comparison, by Player_id:
 
     weightedData = pd.read_csv('datasets/weighted_vector_appearances.csv')
