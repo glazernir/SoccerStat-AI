@@ -5,8 +5,7 @@ from sklearn.mixture import GaussianMixture
 from sklearn.decomposition import PCA
 
 if __name__ == "__main__":
-    df = pd.read_csv("expanded_data.csv")
-
+    df = pd.read_csv("expanded_data_train.csv")
     gmm = GaussianMixture(n_components=3, n_init=10, random_state=42)
     df['cluster'] = gmm.fit_predict(df)
 

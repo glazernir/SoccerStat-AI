@@ -6,13 +6,12 @@ from sklearn.decomposition import PCA
 
 
 if __name__ == "__main__":
-    df = pd.read_csv(r'expanded_data.csv')
+    df = pd.read_csv(r'expanded_data_train.csv')
     kmeans = KMeans(n_clusters=3, n_init=10, random_state=42)   # Use 5 clusters
     df['cluster'] = kmeans.fit_predict(df)
 
     pca = PCA(n_components=2)  # Reduce to 2D
     reduced_data = pca.fit_transform(df.iloc[:, :-1])
-
     plt.figure(figsize=(10,6))
     for cluster_id in range(kmeans.n_clusters):
         cluster_points = reduced_data[df['cluster'] == cluster_id]

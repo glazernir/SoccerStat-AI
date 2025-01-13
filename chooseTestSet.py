@@ -1,10 +1,9 @@
 import pandas as pd
 
-if __name__ == '__main__':
+#Use When interested in choosing a test set that contains only a certain feature / group of features
 
-    file_path = "datasets/appearances.csv"
+def printStats(file_path, cloumn_name):
     df = pd.read_csv(file_path)
-    column_name = "competition_id"
     df[column_name] = df[column_name].dropna()
     column_length = len(df[column_name])
     threshold = 0.2 * column_length
@@ -13,3 +12,10 @@ if __name__ == '__main__':
     print(value_counts)
     print(f"Column length: {column_length}")
     print(f"20% threshold: {threshold}")
+
+
+if __name__ == '__main__':
+
+    file_path = "datasets/appearances.csv"
+    column_name = "competition_id"
+    printStats(file_path, column_name)

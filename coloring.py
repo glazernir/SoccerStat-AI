@@ -1,12 +1,10 @@
 import pandas as pd
 import matplotlib
-from torch.utils.hipify.hipify_python import preprocessor
 
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 import numpy as np
-
 
 
 def plot_dataset_with_continuous_coloring(data, param):
@@ -143,9 +141,6 @@ def prepare_country():
     players = players[players['country_of_birth'].isin(most_common_leagues)]
     players.to_csv("categorical_country.csv")
 
-def setMaxAge(players):
-    return players[players['last_season'] < 2017]
-
 def prepare_age(year,path):
     players = pd.read_csv(path)
     target_year = year
@@ -174,7 +169,6 @@ def prepare_definiteTime_stats(path,requestedYear):
 
 from prettytable import PrettyTable
 
-
 def head_to_head_comparison(weightedData, playersData, player1_id, player2_id):
     player1_weighted = weightedData[weightedData['player_id'] == player1_id].iloc[0]
     player2_weighted = weightedData[weightedData['player_id'] == player2_id].iloc[0]
@@ -198,14 +192,14 @@ def head_to_head_comparison(weightedData, playersData, player1_id, player2_id):
 def Preprocessing():
     prepare_League()
     prepare_country()
+    #choose any year
+    year = 2014
     prepare_definiteTime_stats('datasets/players.csv', 2014)
-    prepare_age(2014, str(2014) + "_stats.csv")
-
+    prepare_age(year, str(year) + "_stats.csv")
 
 if __name__ == '__main__':
 
     Preprocessing()
-
     #categorical coloring:
 
     coloringByParam('datasets/players.csv', 'position',1)
@@ -220,11 +214,11 @@ if __name__ == '__main__':
     coloringByParam('players_age.csv', 'age', 0)
 
 
-    #head to head comparison, by Player_id:
+    # head to head comparison, by Player_id:
 
-    # weightedData = pd.read_csv('datasets/weighted_vector_appearances.csv')
-    # playersData = pd.read_csv('datasets/players.csv')
-    # head_to_head_comparison(weightedData,playersData, 542684,15452)
+    weightedData = pd.read_csv('datasets/weighted_vector_appearances.csv')
+    playersData = pd.read_csv('datasets/players.csv')
+    head_to_head_comparison(weightedData,playersData, 542684,15452)
 
 
 

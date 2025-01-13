@@ -126,42 +126,32 @@ def splitToTrainTest(results,char,player_ids):
         train_data, test_data = train_test_split(results, test_size=0.2, random_state=42)
         return test_data, train_data
 
+def preprocessing(file_path):
+
+    df = load_and_process_data(file_path)
+    df = remove_insufficient_data_players(df)
+    results = calc_by_timefranes(df)
+    results.fillna(0, inplace=True)
+    results.to_csv(r'datasets\vector_appearances.csv')
+    results = calc_weighted_stats(df)
+    results.to_csv(r'datasets\weighted_vector_appearances.csv')
+
 
 if __name__ == "__main__":
-    import torch
-    from torchvision import datasets
-    from torchvision import transforms
-    import matplotlib.pyplot as plt
 
-    # file_path = r'datasets\appearances.csv'
-    # df = load_and_process_data(file_path)
-    # df = remove_insufficient_data_players(df)
-    # results = calc_by_timefranes(df)
-    # results.fillna(0, inplace=True)
-    # results.to_csv(r'datasets\vector_appearances.csv')
-    # results = calc_weighted_stats(df)
-    # results.to_csv(r'datasets\weighted_vector_appearances.csv')
-
+    file_path = r'datasets\appearances.csv'
+    preprocessing(file_path)
     results = pd.read_csv(r'datasets\weighted_vector_appearances.csv')
-
-    #train without split to train + test
-    #trainDataset(results)
 
     #split the data for train and test:
 
-    #'C' for split by competition:
+    #'C' for split by competition,'R' for random split.
     # possible Leagues for test set IT1, ES1,GB1,FR1
     testSet_playerIds = createTestSet('FR1')
     test_data, train_data = splitToTrainTest(results, 'C', testSet_playerIds)
 
-    # #'R' for random split:
-    #test_data, train_data = splitToTrainTest(results, 'R',None)
-
     print(f"Train data size: {len(train_data)}, Test data size: {len(test_data)}")
-
     model, test_loss = train_and_test_autoencoder(train_data, test_data, batch_size=32, encoding_dim=100, num_epochs=20,
                                                   learning_rate=0.003)
     print(f"Test Loss: {test_loss:.4f}")
-
-
 

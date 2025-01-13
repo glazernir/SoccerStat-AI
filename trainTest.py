@@ -6,11 +6,10 @@ import matplotlib.pyplot as plt
 from ED import Autoencoder
 import pandas as pd
 
+
+#Train an autoencoder on the train dataset and evaluate it on the test dataset.
 def train_and_test_autoencoder(train_data, test_data, batch_size=32, encoding_dim=100, num_epochs=20, learning_rate=0.003):
 
-    #Train an autoencoder on the train dataset and evaluate it on the test dataset.
-
-    # Prepare training and testing datasets
     def normalize_and_prepare(dataset):
         player_numbers = dataset.iloc[:, 0]
         data_to_encode = dataset.iloc[:, 1:]
@@ -21,14 +20,12 @@ def train_and_test_autoencoder(train_data, test_data, batch_size=32, encoding_di
     train_players, train_tensor = normalize_and_prepare(train_data)
     test_players, test_tensor = normalize_and_prepare(test_data)
 
-    # Create TensorDatasets and DataLoaders
+
     train_dataset = TensorDataset(train_tensor, train_tensor)
     test_dataset = TensorDataset(test_tensor, test_tensor)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
-
-    # Set random seed for reproducibility
     torch.manual_seed(42)
 
     # Initialize the autoencoder
@@ -76,6 +73,7 @@ def train_and_test_autoencoder(train_data, test_data, batch_size=32, encoding_di
 
     expandedData_train_df['player_id'] = train_players.values
     expandedData_train_df.to_csv('expanded_data_train.csv', index=False)
+
     expandedData_test_df['player_id'] = test_players.values
     expandedData_test_df.to_csv('expanded_data_test.csv', index=False)
 
