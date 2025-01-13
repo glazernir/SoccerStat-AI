@@ -4,5 +4,7 @@ The analysis involves evaluating the performance of the trained autoencoder by c
 ED.py - defines an autoencoder model in PyTorch with an encoder to compress data and a decoder to reconstruct it. It uses linear layers with activation functions like ReLU and Sigmoid.       
 
 coloring.py - processes soccer player data, visualizes it using PCA and scatter plots, and supports data preparation and player comparisons.
-performance_vectors.py - processes soccer player data, computes features, splits it into train and test sets, and trains an autoencoder to evaluate performance
-trainTest.py - trains an autoencoder on normalized soccer player data, evaluates it on a test set, and saves both encoded and expanded representations of the data to CSV files
+
+performance_vectors.py - processes soccer player data, computes features, splits it into train and test sets, and trains an autoencoder to evaluate performance.
+
+trainTest.py - trains an autoencoder on normalized soccer player data, evaluates it on a test set, and saves both encoded and expanded representations of the data to CSV files.
