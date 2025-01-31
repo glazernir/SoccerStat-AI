@@ -4,7 +4,9 @@ The project is based on Python 3.10 and TensorFlow 2.3.1 All the necessary packa
   1. Download and install Anaconda Python from here: https://www.anaconda.com/products/individual/
 
   2. Enter the following commands to create a virtual environment:
-     <pre> ```bash pip install -r requirements.txt ``` </pre>
+     <pre> conda create -n my_env python=3.10 anaconda
+          activate my_env
+          pip install -r requirements.txt </pre>
 
 ## Overview
 
