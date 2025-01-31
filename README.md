@@ -4,14 +4,15 @@ This project focuses on processing and analyzing soccer player performance data 
 
 
 The workflow consists of several key stages:
-Data Preprocessing: Constructing a structured dataset with 16 performance-related features for each player, giving greater emphasis to recent matches.
-**1. Autoencoder Training:** Expanding the 16-dimensional dataset into a 100-dimensional representation using an autoencoder model.
+**1. Data Preprocessing:** Constructing a structured dataset with 16 performance-related features for each player, giving greater emphasis to recent matches.
 
-**E2. valuation:** Assessing the model's performance on a test dataset by analyzing reconstruction loss.
+**2. Autoencoder Training:** Expanding the 16-dimensional dataset into a 100-dimensional representation using an autoencoder model.
 
-**3. Dimensionality Reduction:** Applying Principal Component Analysis (PCA) to reduce the 100-dimensional embeddings into a 2-dimensional space.
+**3. Evaluation:** Assessing the model's performance on a test dataset by analyzing reconstruction loss.
 
-**4. Data Visualization:** Using color-coded PCA graphs based on different features to reveal patterns and insights about player performance.
+**4. Dimensionality Reduction:** Applying Principal Component Analysis (PCA) to reduce the 100-dimensional embeddings into a 2-dimensional space.
+
+**5. Data Visualization:** Using color-coded PCA graphs based on different features to reveal patterns and insights about player performance.
 
 This project enables a more interpretable representation of player data, helping to uncover trends, similarities, and differences between players based on their performance metrics.
 
