@@ -1,4 +1,4 @@
-**Overview**
+## Overview
 
 This project focuses on processing and analyzing soccer player performance data using an autoencoder model to transform and visualize player statistics. The primary goal is to understand player performance differences by reducing and analyzing complex data representations.
 
