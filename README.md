@@ -5,8 +5,8 @@ The project is based on Python 3.10 and TensorFlow 2.3.1 All the necessary packa
 
   2. Enter the following commands to create a virtual environment:
      <pre> conda create -n my_env python=3.10 anaconda
-          activate my_env
-          pip install -r requirements.txt </pre>
+      activate my_env
+      pip install -r requirements.txt </pre>
 
 ## Overview
 
