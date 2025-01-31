@@ -12,7 +12,7 @@ The workflow consists of several key stages:
 
 **4. Dimensionality Reduction:** Applying Principal Component Analysis (PCA) to reduce the 100-dimensional embeddings into a 2-dimensional space.
 
-**5. Data Visualization:** Using color-coded PCA graphs based on different features to reveal patterns and insights about player performance.
+**5. Data Visualization:** Using coloring on PCA graphs based on different features to reveal patterns and insights about player performance.
 
 This project enables a more interpretable representation of player data, helping to uncover trends, similarities, and differences between players based on their performance metrics.
 
