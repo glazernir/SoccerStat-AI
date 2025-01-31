@@ -31,7 +31,7 @@ This project enables a more interpretable representation of player data, helping
 
 The dataset originates from Football Data from Transfermarkt [https://www.kaggle.com/datasets/davidcariboo/player-scores/data?select=appearances.csv]. It contains detailed player statistics for multiple seasons, including attributes such as goals, assists, minutes played, passing accuracy, defensive actions, and more. Before training the model, the raw data undergoes cleaning, normalization, and transformation to ensure consistency and accuracy.
 
-
+## I think should be removed
 ED.py - defines an autoencoder model in PyTorch with an encoder to compress data and a decoder to reconstruct it. It uses linear layers with activation functions like ReLU and Sigmoid.       
 
 coloring.py - processes soccer player data, visualizes it using PCA and scatter plots, and supports data preparation and player comparisons.
