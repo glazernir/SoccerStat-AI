@@ -1,12 +1,15 @@
 ## Installation
-The project is based on Python 3.10 and TensorFlow 2.3.1 All the necessary packages are in requirements.txt. We recommend creating a virtual environment using Anaconda as follows:
+The project is based on Python 3.10 and PyTorch 2.3.1 All the necessary packages are in requirements.txt. We recommend creating a virtual environment using Anaconda as follows:
 
   1. Download and install Anaconda Python from here: https://www.anaconda.com/products/individual/
 
-  2. Enter the following commands to create a virtual environment:
+  2.  Download and install PyTorch from here: https://pytorch.org/
+      
+  3. Enter the following commands to create a virtual environment:
      <pre> conda create -n my_env python=3.10 anaconda
       activate my_env
       pip install -r requirements.txt </pre>
+
 
 ## Overview
 
