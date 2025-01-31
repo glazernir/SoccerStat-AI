@@ -1,18 +1,26 @@
+## Installation
+The project is based on Python 3.10 and TensorFlow 2.3.1 All the necessary packages are in requirements.txt. We recommend creating a virtual environment using Anaconda as follows:
+
+  1. Download and install Anaconda Python from here: https://www.anaconda.com/products/individual/
+
+  2. Enter the following commands to create a virtual environment:
+     <pre> ```bash pip install -r requirements.txt ``` </pre>
+
 ## Overview
 
 This project focuses on processing and analyzing soccer player performance data using an autoencoder model to transform and visualize player statistics. The primary goal is to understand player performance differences by reducing and analyzing complex data representations.
 
 
 The workflow consists of several key stages:
-**1. Data Preprocessing:** Constructing a structured dataset with 16 performance-related features for each player, giving greater emphasis to recent matches.
+  **1. Data Preprocessing:** Constructing a structured dataset with 16 performance-related features for each player, giving greater emphasis to recent matches.
 
-**2. Autoencoder Training:** Expanding the 16-dimensional dataset into a 100-dimensional representation using an autoencoder model.
+  **2. Autoencoder Training:** Expanding the 16-dimensional dataset into a 100-dimensional representation using an autoencoder model.
 
-**3. Evaluation:** Assessing the model's performance on a test dataset by analyzing reconstruction loss.
+  **3. Evaluation:** Assessing the model's performance on a test dataset by analyzing reconstruction loss.
 
-**4. Dimensionality Reduction:** Applying Principal Component Analysis (PCA) to reduce the 100-dimensional embeddings into a 2-dimensional space.
+  **4. Dimensionality Reduction:** Applying Principal Component Analysis (PCA) to reduce the 100-dimensional embeddings into a 2-dimensional space.
 
-**5. Data Visualization:** Using coloring on PCA graphs based on different features to reveal patterns and insights about player performance.
+  **5. Data Visualization:** Using coloring on PCA graphs based on different features to reveal patterns and insights about player performance.
 
 This project enables a more interpretable representation of player data, helping to uncover trends, similarities, and differences between players based on their performance metrics.
 
