@@ -17,6 +17,7 @@ This project focuses on processing and analyzing soccer player performance data 
 
 
 The workflow consists of several key stages:
+
   **1. Data Preprocessing:** Constructing a structured dataset with 16 performance-related features for each player, giving greater emphasis to recent matches.
 
   **2. Autoencoder Training:** Expanding the 16-dimensional dataset into a 100-dimensional representation using an autoencoder model.
