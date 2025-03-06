@@ -1,11 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from performance_vectors import weighted_data
 
 def create_histogram(file_path):
-    data = pd.read_csv(file_path)  # Replace "your_data.csv" with your actual file path
-
+    data = pd.read_csv(file_path)
     numeric_columns = data.drop(columns=['player_id'], errors='ignore').select_dtypes(
         include=['float64', 'int64']).columns
 
@@ -21,6 +19,6 @@ def create_histogram(file_path):
     plt.tight_layout()
     plt.show()
 
-if __name__ == '__main__':
-    #create_histogram(r'datasets/vector_appearances.csv')
-    create_histogram(r'datasets/weighted_vector_appearances.csv')
+def run_createHistogram(file_path):
+    create_histogram(r'datasets/prepared_data.csv')
+

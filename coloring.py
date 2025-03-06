@@ -1,11 +1,29 @@
 import pandas as pd
 import matplotlib
-
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 import numpy as np
+from prettytable import PrettyTable
 
+
+def head_to_head_comparison(weightedData, playersData, player1_id, player2_id):
+    player1_weighted = weightedData[weightedData['player_id'] == player1_id].iloc[0]
+    player2_weighted = weightedData[weightedData['player_id'] == player2_id].iloc[0]
+    player1_players = \
+    playersData[playersData['player_id'] == player1_id].drop(columns=['image_url', 'url'], errors='ignore').iloc[0]
+    player2_players = \
+    playersData[playersData['player_id'] == player2_id].drop(columns=['image_url', 'url'], errors='ignore').iloc[0]
+
+    table = PrettyTable()
+    table.field_names = ["Statistic", f"Player {player1_id}", f"Player {player2_id}"]
+
+    for column in weightedData.columns.drop('player_id'):
+        if column != 'player_id' and column != '' and not column.startswith('Unnamed'):
+            table.add_row([column, player1_weighted[column], player2_weighted[column]])
+    for column in player1_players.index:
+        table.add_row([column, player1_players[column], player2_players[column]])
+    print(table)
 
 def plot_dataset_with_continuous_coloring(data, param):
     def on_click(event):
@@ -16,7 +34,7 @@ def plot_dataset_with_continuous_coloring(data, param):
             pc1 = data.loc[closest_index, 'PC1']
             pc2 = data.loc[closest_index, 'PC2']
             player_id = data.loc[closest_index, 'player_id']
-            print(f"Clicked point: PC1={pc1}, PC2={pc2}, player_id={player_id}")
+            print(f"Clicked point: PC1={pc1}, PC2={pc2}, player_id={int(player_id)}")
 
     plt.figure(figsize=(14, 10))
     sc = plt.scatter(
@@ -47,7 +65,7 @@ def plot_dataset_with_categorical_coloring(data, param):
             pc1 = data.loc[closest_index, 'PC1']
             pc2 = data.loc[closest_index, 'PC2']
             player_id = data.loc[closest_index, 'player_id']
-            print(f"Clicked point: PC1={pc1}, PC2={pc2}, player_id={player_id}")
+            print(f"Clicked point: PC1={pc1}, PC2={pc2}, player_id={int(player_id)}")
 
     plt.figure(figsize=(14, 10))
     param_values = data[param].unique()
@@ -77,7 +95,10 @@ def coloringByParam(path,param,coloringShape):
     # Load the data
     players = pd.read_csv(path)
     w_players = players[["player_id", param]]
+
+    # 'expanded_data_train.csv' - PCA results of the train set.
     df = pd.read_csv(r'expanded_data_train.csv')
+
     player_numbers = df['player_id']
     df_toReduce = df.drop(columns=["player_id"])
     pca = PCA(n_components=2)
@@ -112,22 +133,6 @@ def continuousColoring(dataSet,param):
     plt.tight_layout()
     plt.show()
 
-
-def prepare_marketVaule():
-    players = pd.read_csv("datasets/players.csv")
-    categorical_market_value, ranges = pd.qcut(
-        players['market_value_in_eur'],
-        q=4,
-        retbins=True
-    )
-    labels = [f"{int(low)}-{int(high)}" for low, high in zip(ranges[:-1], ranges[1:])]
-    players["categorical_market_value"] = pd.qcut(
-        players['market_value_in_eur'],
-        q=4,
-        labels=labels
-    )
-    players.to_csv("categorical_market_value.csv", index=False)
-    return players
 
 def prepare_League():
     players = pd.read_csv("datasets/players.csv")
@@ -167,28 +172,6 @@ def prepare_definiteTime_stats(path,requestedYear):
     result.to_csv(str(requestedYear) + '_stats.csv', index=False)
 
 
-from prettytable import PrettyTable
-
-def head_to_head_comparison(weightedData, playersData, player1_id, player2_id):
-    player1_weighted = weightedData[weightedData['player_id'] == player1_id].iloc[0]
-    player2_weighted = weightedData[weightedData['player_id'] == player2_id].iloc[0]
-    player1_players = \
-    playersData[playersData['player_id'] == player1_id].drop(columns=['image_url', 'url'], errors='ignore').iloc[0]
-    player2_players = \
-    playersData[playersData['player_id'] == player2_id].drop(columns=['image_url', 'url'], errors='ignore').iloc[0]
-
-    table = PrettyTable()
-    table.field_names = ["Statistic", f"Player {player1_id}", f"Player {player2_id}"]
-
-    for column in weightedData.columns.drop('player_id'):
-        table.add_row([column, player1_weighted[column], player2_weighted[column]])
-
-    for column in player1_players.index:
-        table.add_row([column, player1_players[column], player2_players[column]])
-
-    print(table)
-
-
 def Preprocessing():
     prepare_League()
     prepare_country()
@@ -197,28 +180,18 @@ def Preprocessing():
     prepare_definiteTime_stats('datasets/players.csv', 2014)
     prepare_age(year, str(year) + "_stats.csv")
 
-if __name__ == '__main__':
-
+def run_coloring():
     Preprocessing()
-    #categorical coloring:
+    # categorical coloring:
 
-    coloringByParam('datasets/players.csv', 'position',1)
-    coloringByParam('categorical_League.csv','current_club_domestic_competition_id',1)
-    coloringByParam('categorical_country.csv','country_of_birth',1)
-    coloringByParam('datasets/players.csv','foot',1)
+    coloringByParam('datasets/players.csv', 'position', 1)
+    coloringByParam('categorical_League.csv', 'current_club_domestic_competition_id', 1)
+    coloringByParam('categorical_country.csv', 'country_of_birth', 1)
+    coloringByParam('datasets/players.csv', 'foot', 1)
 
-    #continuous coloring:
+    # continuous coloring:
 
-    coloringByParam('datasets/players.csv','market_value_in_eur',0)
-    coloringByParam('datasets/players.csv','height_in_cm',0)
+    coloringByParam('datasets/players.csv', 'market_value_in_eur', 0)
+    coloringByParam('datasets/players.csv', 'height_in_cm', 0)
     coloringByParam('players_age.csv', 'age', 0)
-
-
-    # head to head comparison, by Player_id:
-
-    weightedData = pd.read_csv('datasets/weighted_vector_appearances.csv')
-    playersData = pd.read_csv('datasets/players.csv')
-    head_to_head_comparison(weightedData,playersData, 542684,15452)
-
-
 

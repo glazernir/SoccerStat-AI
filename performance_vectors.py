@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from train import trainDataset
+#from train import trainDataset
 from numpy.random import exponential
 from sklearn.model_selection import train_test_split
 from trainTest import train_and_test_autoencoder
@@ -35,123 +35,80 @@ def remove_insufficient_data_players(df):
     
     return df_filtered[df_filtered['player_id'].isin(players_with_recent_data)]
 
-def calculate_sums(player_df):
-    total_minutes = player_df['minutes_played'].sum()
-    if total_minutes == 0:
-        return pd.Series({
-            'normalized_goals': 0,
-            'normalized_assists': 0,
-            'normalized_yellow_cards': 0,
-            'normalized_red_cards': 0,
-            'total_time_in_minutes': 0
-        })
-    return pd.Series({
-        'normalized_goals': player_df['goals'].sum() / total_minutes,
-        'normalized_assists': player_df['assists'].sum() / total_minutes,
-        'normalized_yellow_cards': player_df['yellow_cards'].sum() / total_minutes,
-        'normalized_red_cards': player_df['red_cards'].sum() / total_minutes,
-        'total_time_in_minutes': total_minutes
-    })
+def calculate_features(player_df, method='weighted', decay_rate=0.5, time_factor=30):
+    player_df['date'] = pd.to_datetime(player_df['date'], format='%d/%m/%Y')
+    player_df = player_df[(player_df['date'].dt.year == 2012) & (player_df['date'].dt.month.isin([6,7,8]))]
+    #player_df = player_df[(player_df['date'].dt.year.isin([2012,2013]))]
 
-def calc_weighted_stats(df):
-    return df.groupby('player_id').apply(weighted_data)
+    player_performances = []
+    i = 0
+    for index, row in player_df.iterrows():
+        print(i)
+        i = i+1
+        # make a copy of player_df and leave only rows that are closer to the current row than 90 days
+        player_df_instance = player_df[(player_df['date'] <= row['date']) & (player_df['date'] >= row['date'] - pd.DateOffset(days=90))]
+        total_minutes = player_df_instance['minutes_played'].sum()
+        if total_minutes == 0:
+            player_performance = pd.Series({
+                                'normalized_goals': 0,
+                                'normalized_assists': 0,
+                                'normalized_yellow_cards': 0,
+                                'normalized_red_cards': 0,
+                                'total_time_in_minutes': 0
+                                })
 
-def calc_time_limit_ago(time_limit_ago, df):
-    df_last_year = df[df['date'] >= time_limit_ago]
-    return df_last_year.groupby('player_id').apply(calculate_sums)
-
-def calc_by_timefranes(df):
-    timeframes = {
-        'one_month_ago': pd.Timestamp.now() - pd.DateOffset(days=30),
-        'three_months_ago': pd.Timestamp.now() - pd.DateOffset(days=90),
-        'six_months_ago': pd.Timestamp.now() - pd.DateOffset(days=182),
-        'one_year_ago': pd.Timestamp.now() - pd.DateOffset(days=365)
-    }
-    
-    results = pd.DataFrame()
-
-    for label, time_limit in timeframes.items():
-        # Calculate for each timeframe
-        result = calc_time_limit_ago(time_limit, df)
-        
-        # Rename columns to indicate the time period
-        result.columns = [f'{col}_{label}' for col in result.columns]
-        
-        # Concatenate the results by player_id
-        if results.empty:
-            results = result
         else:
-            results = results.join(result, how='outer')
+            if method == 'weighted':
+                player_df_instance['calc_time'] = (row['date'] - player_df_instance['date']).dt.days
+                player_df_instance['weights'] = np.exp(-decay_rate * player_df_instance['calc_time'] / time_factor)
+                # player_df_instance['weights'] = player_df_instance['weights'] / player_df_instance['weights'].sum() # normalize
+                #player_performance = pd.Series({col: (player_df_instance[col] * player_df_instance['weights']).sum() / total_minutes  for col in data_columns})
 
-    return results
-
-def weighted_data(df):
-    current_time = pd.Timestamp.now()
-    df['calc_time'] = (current_time - df['date']).dt.days
-    #df['calc_time'] = pd.to_numeric(df['calc_time'], errors='coerce')
-    df['weights'] = np.exp(-decay_rate * df['calc_time'] / 365)
-    total_minutes = df['minutes_played'].sum()
-    if total_minutes == 0:
-        return pd.Series({
-            'weighted_goals': 0,
-            'weighted_assists': 0,
-            'weighted_yellow_cards': 0,
-            'weighted_red_cards': 0,
-            'total_time': 0
-        })
-    return pd.Series({
-        'weighted_goals': (df['goals'] * df['weights']).sum(),
-        'weighted_assits': (df['assists'] * df['weights']).sum(),
-        'weighted_yellow_cards': (df['yellow_cards'] * df['weights']).sum(),
-        'weighted_red_cards': (df['red_cards'] * df['weights']).sum(),
-        'total_time': total_minutes
-    })
-
-def createTestSet(league):
-    # extract the players from specific league for test set
-    df = pd.read_csv("datasets/appearances.csv")
-    filtered_df = df[df['competition_id'] == league]
-    player_ids = filtered_df['player_id'].unique()
-    return player_ids
+                player_performance = pd.Series({
+                    'weighted_goals': (player_df_instance['goals'] * player_df_instance['weights']).sum() / total_minutes,
+                    'weighted_assits': (player_df_instance['assists'] * player_df_instance['weights']).sum() / total_minutes,
+                    'weighted_yellow_cards': (player_df_instance['yellow_cards'] * player_df_instance['weights']).sum() / total_minutes,
+                    'weighted_red_cards': (player_df_instance['red_cards'] * player_df_instance['weights']).sum() / total_minutes,
+                    'total_time': total_minutes / total_minutes
+                })
 
 
-def splitToTrainTest(results,char,player_ids):
-    # if we want to split by competition
-    if char == 'C':
-        test_data = results[results['player_id'].isin(player_ids)]
-        train_data = results[~results['player_id'].isin(player_ids)]
-        return test_data, train_data
-    # if we want to split randomly
-    elif char == 'R':
-        train_data, test_data = train_test_split(results, test_size=0.2, random_state=42)
-        return test_data, train_data
+            else:
+                #player_performance = pd.Series({col: player_df_instance[col].sum() / total_minutes for col in data_columns})
+                player_performance = pd.Series({'normalized_goals': player_df_instance['goals'].sum() / total_minutes,
+                                                'normalized_assists': player_df_instance['assists'].sum() / total_minutes,
+                                                'normalized_yellow_cards': player_df_instance['yellow_cards'].sum() / total_minutes,
+                                                'normalized_red_cards': player_df_instance['red_cards'].sum() / total_minutes,
+                                                'total_time_in_minutes': total_minutes / total_minutes})
+            player_performance['minutes_played'] = total_minutes
+
+        # add date, player name and ID
+        # player_performance['date'] = row['date']
+        # player_performance['player_club_id'] = row['player_club_id']
+        player_performance['player_id'] = row['player_id']
+        #player_performance['player_name'] = row['player_name']
+        player_performances.append(player_performance)
+
+    if not player_performances:  # Check if the list is empty
+        return pd.DataFrame()
+    return pd.concat(player_performances, axis=1).T
+
+
+def create_performance_vectors(df):
+    # Calculate for each timeframe
+    performance_df = df.groupby('player_id').apply(lambda x: calculate_features(x))
+    performance_df = pd.DataFrame(performance_df.values.tolist(), columns=performance_df.columns)
+    return performance_df
 
 def preprocessing(file_path):
 
     df = load_and_process_data(file_path)
     df = remove_insufficient_data_players(df)
-    results = calc_by_timefranes(df)
-    results.fillna(0, inplace=True)
-    results.to_csv(r'datasets\vector_appearances.csv')
-    results = calc_weighted_stats(df)
-    results.to_csv(r'datasets\weighted_vector_appearances.csv')
+    performance_df = create_performance_vectors(df)
+    return performance_df
 
-
-if __name__ == "__main__":
-
-    file_path = r'datasets\appearances.csv'
-    preprocessing(file_path)
-    results = pd.read_csv(r'datasets\weighted_vector_appearances.csv')
-
-    #split the data for train and test:
-
-    #'C' for split by competition,'R' for random split.
-    # possible Leagues for test set IT1, ES1,GB1,FR1
-    testSet_playerIds = createTestSet('FR1')
-    test_data, train_data = splitToTrainTest(results, 'C', testSet_playerIds)
-
-    print(f"Train data size: {len(train_data)}, Test data size: {len(test_data)}")
-    model, test_loss = train_and_test_autoencoder(train_data, test_data, batch_size=32, encoding_dim=100, num_epochs=20,
-                                                  learning_rate=0.003)
-    print(f"Test Loss: {test_loss:.4f}")
+def run_performance_vectors(file_path):
+    results = preprocessing(file_path)
+    results.to_csv(r'datasets\prepared_data.csv')
+    return results
 

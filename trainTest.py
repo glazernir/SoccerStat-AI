@@ -8,18 +8,19 @@ import pandas as pd
 
 
 #Train an autoencoder on the train dataset and evaluate it on the test dataset.
-def train_and_test_autoencoder(train_data, test_data, batch_size=32, encoding_dim=100, num_epochs=20, learning_rate=0.003):
+def train_and_test_autoencoder(train_data, test_data, batch_size=32, encoding_dim=32, num_epochs=20, learning_rate=0.003):
 
     def normalize_and_prepare(dataset):
-        player_numbers = dataset.iloc[:, 0]
-        data_to_encode = dataset.iloc[:, 1:]
-        normalized_data = (data_to_encode - data_to_encode.min()) / (data_to_encode.max() - data_to_encode.min())
+        dataset = dataset.loc[:, ~dataset.columns.str.contains('^Unnamed')]
+        player_numbers = dataset["player_id"]
+        data_to_encode = dataset.drop(columns=["player_id"])
+        epsilon = 1e-8  # Small constant to avoid division by zero
+        normalized_data = (data_to_encode - data_to_encode.min()) / (data_to_encode.max() - data_to_encode.min() + epsilon)
         tensor_data = torch.FloatTensor(normalized_data.to_numpy())
         return player_numbers, tensor_data
 
     train_players, train_tensor = normalize_and_prepare(train_data)
     test_players, test_tensor = normalize_and_prepare(test_data)
-
 
     train_dataset = TensorDataset(train_tensor, train_tensor)
     test_dataset = TensorDataset(test_tensor, test_tensor)
