@@ -97,6 +97,7 @@ def coloringByParam(path,param,coloringShape):
     w_players = players[["player_id", param]]
 
     # 'expanded_data_train.csv' - PCA results of the train set.
+    # replace with the path to your wanted PCA results.
     df = pd.read_csv(r'expanded_data_train.csv')
 
     player_numbers = df['player_id']

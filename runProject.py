@@ -17,7 +17,6 @@ if __name__ == "__main__":
     # 2
     # prepare data + weight data.
     prepared_data = run_performance_vectors(file_path)
-    prepared_data.to_csv('datasets/Test.csv')
 
     # 3
     # create Train - Test sets for PCA.
