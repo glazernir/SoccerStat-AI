@@ -18,8 +18,8 @@ This project focuses on processing and analyzing soccer player performance data 
 
 The workflow consists of several key stages:
 
-  **1. Data Preprocessing:** Constructing a structured dataset with 16 performance-related features for each player, giving greater emphasis to recent matches.
-
+  **1. Data Preprocessing:** Constructing a structured dataset with 16 performance-related features for each player, giving greater emphasis to recent matches. 
+  
   **2. Autoencoder Training:** Expanding the 16-dimensional dataset into a 100-dimensional representation using an autoencoder model.
 
   **3. Evaluation:** Assessing the model's performance on a test dataset by analyzing reconstruction loss.
@@ -41,7 +41,7 @@ use runProject.py file.
 The project starts by loading player statistics from "datasets/appearances.csv" - the path to original data.
 
 2. ## Prepare Data & Calculate Performance Vectors
-The run_performance_vectors function processes the data.
+The run_performance_vectors function processes and normalize the data. You can shorten the process by selecting only specific years for the process - check "calculate_features" function in run_performance_vectors.py
 
 3. ## Create Train-Test Sets
 Generate train and test datasets for PCA analysis:
@@ -59,6 +59,10 @@ The run_coloring function visualizes PCA results and the coloring according to e
 
 6. ## Head-to-Head Player Comparison
 Compare two specific players using their Player_id (Example: 89200, 40680).
+Each coloring of the PCA results by each parameter will pop up in order at the end of the run.
+To compare two players' stats based on the color of their dots/their location on the graph, you can click on the dot and the player ID of the dot will be printed as output. You can then pass the desired player IDs for comparision as parameters to the function head_to_head_comparison. 
+
+
 
 
 
