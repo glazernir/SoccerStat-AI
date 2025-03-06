@@ -19,7 +19,6 @@ def train_and_test_autoencoder(train_data, test_data, batch_size=32, encoding_di
         tensor_data = torch.FloatTensor(normalized_data.to_numpy())
         return player_numbers, tensor_data
 
-
     train_players, train_tensor = normalize_and_prepare(train_data)
     test_players, test_tensor = normalize_and_prepare(test_data)
 
