@@ -41,7 +41,7 @@ use runProject.py file.
 The project starts by loading player statistics from "datasets/appearances.csv" - the path to original data.
 
 2. ## Prepare Data & Calculate Performance Vectors
-The run_performance_vectors function processes the data. You can shorten the process by selecting only specific years for the process - check "calculate_features" function in run_performance_vectors.py
+The run_performance_vectors function processes and normalize the data. You can shorten the process by selecting only specific years for the process - check "calculate_features" function in run_performance_vectors.py
 
 3. ## Create Train-Test Sets
 Generate train and test datasets for PCA analysis:
