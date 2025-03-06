@@ -8,6 +8,7 @@ from trainTest import train_and_test_autoencoder
 
 if __name__ == "__main__":
 
+
     # 1
     # load original players stats.
     file_path = 'datasets/appearances.csv'
