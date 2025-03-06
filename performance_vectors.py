@@ -13,7 +13,6 @@ def load_and_process_data(file_path):
     return df
 
 
-
 def remove_insufficient_data_players(df):
     player_groups = df.groupby('player_id').agg(
         first_appearance=('date', 'min'),
@@ -39,14 +38,11 @@ def remove_insufficient_data_players(df):
 
 def calculate_features(player_df, method='weighted', decay_rate=0.5, time_factor=30):
     player_df['date'] = pd.to_datetime(player_df['date'], format='%d/%m/%Y')
-    player_df = player_df[(player_df['date'].dt.year == 2012) & (player_df['date'].dt.month.isin([6,7,8]))]
-    #player_df = player_df[(player_df['date'].dt.year.isin([2012,2013]))]
+    # can select only specific years for the data processing. for example:
+    # player_df = player_df[(player_df['date'].dt.year.isin([2012,2013]))]
 
     player_performances = []
-    i = 0
     for index, row in player_df.iterrows():
-        print(i)
-        i = i+1
         # make a copy of player_df and leave only rows that are closer to the current row than 90 days
         player_df_instance = player_df[(player_df['date'] <= row['date']) & (player_df['date'] >= row['date'] - pd.DateOffset(days=90))]
         total_minutes = player_df_instance['minutes_played'].sum()
@@ -63,8 +59,6 @@ def calculate_features(player_df, method='weighted', decay_rate=0.5, time_factor
             if method == 'weighted':
                 player_df_instance['calc_time'] = (row['date'] - player_df_instance['date']).dt.days
                 player_df_instance['weights'] = np.exp(-decay_rate * player_df_instance['calc_time'] / time_factor)
-                # player_df_instance['weights'] = player_df_instance['weights'] / player_df_instance['weights'].sum() # normalize
-                #player_performance = pd.Series({col: (player_df_instance[col] * player_df_instance['weights']).sum() / total_minutes  for col in data_columns})
 
                 player_performance = pd.Series({
                     'weighted_goals': (player_df_instance['goals'] * player_df_instance['weights']).sum() / total_minutes,
@@ -76,7 +70,6 @@ def calculate_features(player_df, method='weighted', decay_rate=0.5, time_factor
 
 
             else:
-                #player_performance = pd.Series({col: player_df_instance[col].sum() / total_minutes for col in data_columns})
                 player_performance = pd.Series({'normalized_goals': player_df_instance['goals'].sum() / total_minutes,
                                                 'normalized_assists': player_df_instance['assists'].sum() / total_minutes,
                                                 'normalized_yellow_cards': player_df_instance['yellow_cards'].sum() / total_minutes,
@@ -84,11 +77,8 @@ def calculate_features(player_df, method='weighted', decay_rate=0.5, time_factor
                                                 'total_time_in_minutes': total_minutes / total_minutes})
             player_performance['minutes_played'] = total_minutes
 
-        # add date, player name and ID
-        # player_performance['date'] = row['date']
-        # player_performance['player_club_id'] = row['player_club_id']
+        # add player ID
         player_performance['player_id'] = row['player_id']
-        #player_performance['player_name'] = row['player_name']
         player_performances.append(player_performance)
 
     if not player_performances:  # Check if the list is empty
