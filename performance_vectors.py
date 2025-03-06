@@ -13,6 +13,7 @@ def load_and_process_data(file_path):
     return df
 
 
+
 def remove_insufficient_data_players(df):
     player_groups = df.groupby('player_id').agg(
         first_appearance=('date', 'min'),
