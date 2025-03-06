@@ -59,6 +59,10 @@ The run_coloring function visualizes PCA results and the coloring according to e
 
 6. ## Head-to-Head Player Comparison
 Compare two specific players using their Player_id (Example: 89200, 40680).
+Each coloring of the PCA results by each parameter will pop up in order at the end of the run.
+To compare two players' stats based on the color of their dots/their location on the graph, you can click on the dot and the player ID of the dot will be printed as output. You can then pass the desired player IDs for comparision as parameters to the function head_to_head_comparison. 
+
+
 
 
 
