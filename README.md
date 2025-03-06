@@ -35,3 +35,37 @@ This project enables a more interpretable representation of player data, helping
 
 The dataset originates from Football Data from Transfermarkt [https://www.kaggle.com/datasets/davidcariboo/player-scores/data?select=appearances.csv]. It contains detailed player statistics for multiple seasons, including attributes such as goals, assists, minutes played, passing accuracy, defensive actions, and more. Before training the model, the raw data undergoes cleaning, normalization, and transformation to ensure consistency and accuracy.
 
+## Steps to Run the Project:
+use runProject.py file. 
+1. ## Load Original Players Stats:
+The project starts by loading player statistics from "datasets/appearances.csv" - the path to original data.
+
+2. ## Prepare Data & Calculate Performance Vectors
+The run_performance_vectors function processes the data.
+
+3. ## Create Train-Test Sets
+Generate train and test datasets for PCA analysis:
+
+- 'C' for splitting by competition.
+- 'R' for random split.
+  (If you choose split by competition, you need to specify What competitions will be included in the test set - for example, we chose only FR1 competition for     
+   test. read chooseTestSet.py for a smart choice). 
+
+4. ## Model Training
+Train the autoencoder model and display the test loss.
+
+5. ## Run PCA & Display Coloring
+The run_coloring function visualizes PCA results and the coloring according to every parameter. 
+
+6. ## Head-to-Head Player Comparison
+Compare two specific players using their Player_id (Example: 89200, 40680).
+
+
+
+
+
+
+
+
+
+
