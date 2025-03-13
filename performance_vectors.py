@@ -82,6 +82,10 @@ def calculate_features(player_df, method='weighted', decay_rate=0.5, time_factor
     Returns:
     - A DataFrame with computed performance metrics for each appearance.
     """
+
+    # can select only specific years for the data processing. for example:
+    # player_df = player_df[(player_df['date'].dt.year.isin([2012,2013]))]
+
     player_df['date'] = pd.to_datetime(player_df['date'], format='%d/%m/%Y')
 
     player_performances = []
@@ -155,10 +159,6 @@ def create_performance_vectors(df):
     Returns:
     - A DataFrame containing performance metrics for each player.
     """
-
-    # can select only specific years for the data processing. for example:
-    # player_df = player_df[(player_df['date'].dt.year.isin([2012,2013]))]
-
     performance_df = df.groupby('player_id').apply(lambda x: calculate_features(x))
     performance_df = pd.DataFrame(performance_df.values.tolist(), columns=performance_df.columns)
     return performance_df
