@@ -155,6 +155,10 @@ def create_performance_vectors(df):
     Returns:
     - A DataFrame containing performance metrics for each player.
     """
+
+    # can select only specific years for the data processing. for example:
+    # player_df = player_df[(player_df['date'].dt.year.isin([2012,2013]))]
+
     performance_df = df.groupby('player_id').apply(lambda x: calculate_features(x))
     performance_df = pd.DataFrame(performance_df.values.tolist(), columns=performance_df.columns)
     return performance_df
