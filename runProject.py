@@ -1,14 +1,12 @@
 from coloring import run_coloring
 from coloring import head_to_head_comparison
-from chooseTestSet import run_trainTestCreate
+from chooseTestSet import run_train_test_create
 import pandas as pd
 from performance_vectors import run_performance_vectors
 from trainTest import train_and_test_autoencoder
 
 
 if __name__ == "__main__":
-
-
     # 1
     # load original players stats.
     file_path = 'datasets/appearances.csv'
@@ -21,7 +19,7 @@ if __name__ == "__main__":
     # 3
     # create Train - Test sets for PCA.
     # 'C' for split to train - test by competition,'R' for random split.
-    test_data, train_data = run_trainTestCreate(prepared_data,'C')
+    test_data, train_data = run_train_test_create(prepared_data,'C')
 
     # 4
     # model training.
