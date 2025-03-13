@@ -1,3 +1,4 @@
+# 🚀 SoccerStat-AI🚀
 ## Installation
 The project is based on Python 3.10 and PyTorch 2.3.1 All the necessary packages are in requirements.txt. We recommend creating a virtual environment using Anaconda as follows:
 
