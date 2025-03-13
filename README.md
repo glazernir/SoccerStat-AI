@@ -1,4 +1,4 @@
-# 🚀 SoccerStat-AI🚀
+# 🚀SoccerStat-AI🚀
 ![image](https://github.com/user-attachments/assets/6754b550-7269-43fc-ac4c-9a9290f29c49)
 
 ## Installation
