@@ -34,6 +34,6 @@ if __name__ == "__main__":
 
     # 6
     # head-to-head comparison, by Player_id (hard Coded example):
-    weightedData = pd.read_csv('datasets/Test.csv')
+    weightedData = pd.read_csv('datasets/prepared_data.csv')
     playersData = pd.read_csv('datasets/players.csv')
     head_to_head_comparison(weightedData, playersData, 89200, 40680)

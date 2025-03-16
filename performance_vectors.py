@@ -84,7 +84,7 @@ def calculate_features(player_df, method='weighted', decay_rate=0.5, time_factor
     """
 
     # can select only specific years for the data processing. for example:
-    # player_df = player_df[(player_df['date'].dt.year.isin([2012,2013]))]
+    # player_df = player_df[(player_df['date'].dt.year.isin([2012, 2013]))]
 
     player_df['date'] = pd.to_datetime(player_df['date'], format='%d/%m/%Y')
 
