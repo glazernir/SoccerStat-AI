@@ -1,15 +1,5 @@
-# 🚀 SoccerStat-AI🚀
-## Installation
-The project is based on Python 3.10 and PyTorch 2.3.1 All the necessary packages are in requirements.txt. We recommend creating a virtual environment using Anaconda as follows:
-
-  1. Download and install Anaconda Python from here: https://www.anaconda.com/products/individual/
-
-  2.  Download and install PyTorch from here: https://pytorch.org/
-      
-  3. Enter the following commands to create a virtual environment:
-     <pre> conda create -n my_env python=3.10 anaconda
-      activate my_env
-      pip install -r requirements.txt </pre>
+# 🚀SoccerStat-AI🚀
+![image](https://github.com/user-attachments/assets/6754b550-7269-43fc-ac4c-9a9290f29c49)
 
 
 ## Overview
@@ -32,6 +22,19 @@ The workflow consists of several key stages:
 This project enables a more interpretable representation of player data, helping to uncover trends, similarities, and differences between players based on their performance metrics.
 
 
+## Installation
+The project is based on Python 3.10 and PyTorch 2.3.1 All the necessary packages are in requirements.txt. We recommend creating a virtual environment using Anaconda as follows:
+
+  1. Download and install Anaconda Python from here: https://www.anaconda.com/products/individual/
+
+  2.  Download and install PyTorch from here: https://pytorch.org/
+      
+  3. Enter the following commands to create a virtual environment:
+     <pre> conda create -n my_env python=3.10 anaconda
+      activate my_env
+      pip install -r requirements.txt </pre>
+
+      
 ## Dataset
 
 The dataset originates from Football Data from Transfermarkt [https://www.kaggle.com/datasets/davidcariboo/player-scores/data?select=appearances.csv]. It contains detailed player statistics for multiple seasons, including attributes such as goals, assists, minutes played, passing accuracy, defensive actions, and more. Before training the model, the raw data undergoes cleaning, normalization, and transformation to ensure consistency and accuracy.
